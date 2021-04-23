@@ -1,5 +1,6 @@
 # Interpretation Machination
 ![Build & Test Badge](https://github.com/inviolacy-edulcorate/InterpretationMachination/actions/workflows/dotnet.yml/badge.svg?branch=main)
+
 This is the project containing the Interpretation Machination code.
 For creating this project, I followed these tutorials.
  - [lsbasi-part1](https://ruslanspivak.com/lsbasi-part1/)
