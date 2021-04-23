@@ -226,7 +226,7 @@ namespace InterpretationMachination.PascalInterpreter
             }
 
             var stackFrame = new StackFrame(
-                procedureSymbol.SymbolTable, 
+                procedureSymbol.SymbolTable,
                 procedureSymbol.Name,
                 GlobalScope.Top.Level + 1);
 
@@ -344,7 +344,7 @@ namespace InterpretationMachination.PascalInterpreter
                 int i;
                 if (index.Type.Name == "INTEGER")
                 {
-                    i = (int) index.Value;
+                    i = Convert.ToInt32(index.Value);
                 }
                 else
                 {
