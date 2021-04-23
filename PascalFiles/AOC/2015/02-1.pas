@@ -1,15 +1,18 @@
 program Main;
 	var text : string;
 		i, inputLength, l, w, h : integer;
+		lstr, wstr, hstr : string;
 		keepLoopGoing : boolean;
 		ex01, ex02 : string;
 	
 	function GetNumber(text : string; startFrom: integer) : string;
 		var i : integer;
+			number : string;
 			keepLoopGoing : boolean;
 	begin
 		keepLoopGoing := true;
-		i := 0;
+		i := startFrom;
+		number := '';
 
 		while keepLoopGoing do
 		begin
@@ -19,6 +22,8 @@ program Main;
 				{Break out if we find an X}
 				if (text[i] = 'x') then keepLoopGoing := false;
 
+				number := number + text[i];
+				
 				i := i + 1;
 			end;
 		end;
@@ -43,9 +48,9 @@ begin { Main }
 		if (i - inputLength = 0) then keepLoopGoing := false
 		else
 		begin
-			l := GetNumber(text, i);
+			lstr := GetNumber(text, i);
 
-			i := i + Length(l);
+			i := i + Length(lstr);
 			
 			i := i + 1;
 		end;

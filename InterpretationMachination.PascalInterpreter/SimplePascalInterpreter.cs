@@ -256,9 +256,9 @@ namespace InterpretationMachination.PascalInterpreter
                     {
                         case "LENGTH":
                             var str = VisitAstNode(node.Parameters[0]);
-                            if (str.Type.Name == "STRING" && str.Value is string strstr)
+                            if (str.Type.Name == "STRING")
                             {
-                                return CreateIntegerValueResult(strstr.Length);
+                                return CreateIntegerValueResult(str.Value.ToString().Length);
                             }
 
                             // TODO: Length param String is not string.
