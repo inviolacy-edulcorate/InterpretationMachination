@@ -5,17 +5,11 @@ program Main;
 		ex01, ex02, ex03, ex04, ex05,ex06, ex07, ex08, ex09 : string;
 		
 begin { Main }
-	ex01 := '(())';
-	ex02 := '()()';
-	ex03 := '(((';
-	ex04 := '(()(()(';
-	ex05 := '))(((((';
-	ex06 := '())';
-	ex07 := '))(';
-	ex08 := ')))';
-	ex09 := ')())())';
+	ex01 := ')'; {1}
+	ex02 := '()())'; {5}
 
 	text := ReadFile('Input\01.txt');
+	{text := ex02;}
 	inputLength := Length(text);
 	keepLoopGoing := true;
 	i := 0;
@@ -28,10 +22,13 @@ begin { Main }
 		begin
 			if (text[i] = '(') then floor := floor + 1;
 			if (text[i] = ')') then floor := floor - 1;
+
+			if (floor = -1) then keepLoopGoing := false;
 			
+			{Can leave this here, +1 is needed anyway because of 0 indexing.}
 			i := i + 1;
 		end;
 	end;
 	
-	writeln(floor);
+	writeln(i);
 end.  { Main }
