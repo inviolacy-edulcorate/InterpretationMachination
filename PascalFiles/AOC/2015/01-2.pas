@@ -2,7 +2,7 @@ program Main;
 	var text : string;
 		i, inputLength, floor : integer;
 		keepLoopGoing : boolean;
-		ex01, ex02, ex03, ex04, ex05,ex06, ex07, ex08, ex09 : string;
+		ex01, ex02 : string;
 		
 begin { Main }
 	ex01 := ')'; {1}

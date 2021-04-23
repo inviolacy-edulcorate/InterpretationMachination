@@ -17,6 +17,9 @@ namespace InterpretationMachination.ConsoleApp
             if (args.Length > 0)
             {
                 var filePath = args[0];
+
+                Console.WriteLine($"Attempting to run '{filePath}'...");
+
                 // Move the current dir to the specified file's dir, so files can be called relative to the file (readfile).
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
 

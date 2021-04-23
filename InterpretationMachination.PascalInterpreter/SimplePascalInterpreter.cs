@@ -74,7 +74,7 @@ namespace InterpretationMachination.PascalInterpreter
             }
         }
 
-        protected override object VisitNumericNode(NumNode<PascalTokenType> node)
+        protected override object VisitNumericNode(LiteralNode<PascalTokenType> node)
         {
             return node.Value;
         }
@@ -103,7 +103,7 @@ namespace InterpretationMachination.PascalInterpreter
             GlobalScope[assignNode.Variable.Name] = VisitAstNode(assignNode.Expr);
         }
 
-        protected override void VisitProcedureNode(ProcedureNode<PascalTokenType> procedureNode)
+        protected override void VisitProcedureNode(ProcedureDeclarationNode<PascalTokenType> procedureDeclarationNode)
         {
             // Do nothing, declaration has happened, no need to run now.
         }

@@ -1,22 +1,10 @@
 program Main;
-	var text : string;
-		i, inputLength : integer;
-		keepLoopGoing : boolean;
+	var text1, text2, text3 : string;
 		
 begin { Main }
-	text := ReadFile('.\AOC\2015\01.txt');
-	inputLength := Length(text);
-	keepLoopGoing := true;
-	i := 0;
+	text1 := 'Hello';
+	text2 := 'World';
+	text3 := text1 + ' ' + text2 + '!';
 	
-	while keepLoopGoing do
-	begin
-		if (i - inputLength = 0) then keepLoopGoing := false
-		else
-		begin
-			writeln(text[i]);
-			
-			i := i + 1;
-		end;
-	end;
+	writeln(text3);
 end.  { Main }

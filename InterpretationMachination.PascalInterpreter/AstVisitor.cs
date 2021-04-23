@@ -28,7 +28,7 @@ namespace InterpretationMachination.PascalInterpreter
                     return VisitBinOpNode(binOpNode);
                     break;
 
-                case NumNode<T> numNode:
+                case LiteralNode<T> numNode:
                     return VisitNumericNode(numNode);
 
                 case UnaryOpNode<T> unaryOpNode:
@@ -67,7 +67,7 @@ namespace InterpretationMachination.PascalInterpreter
                     VisitTypeNode(typeNode);
                     break;
 
-                case ProcedureNode<T> procedureNode:
+                case ProcedureDeclarationNode<T> procedureNode:
                     VisitProcedureNode(procedureNode);
                     break;
 
@@ -124,17 +124,17 @@ namespace InterpretationMachination.PascalInterpreter
             }
         }
 
-        protected virtual void VisitProcedureNode(ProcedureNode<T> procedureNode)
+        protected virtual void VisitProcedureNode(ProcedureDeclarationNode<T> procedureDeclarationNode)
         {
-            if (procedureNode.Parameters != null)
+            if (procedureDeclarationNode.Parameters != null)
             {
-                foreach (var procedureNodeParameter in procedureNode.Parameters)
+                foreach (var procedureNodeParameter in procedureDeclarationNode.Parameters)
                 {
                     VisitAstNode(procedureNodeParameter);
                 }
             }
 
-            VisitAstNode(procedureNode.Block);
+            VisitAstNode(procedureDeclarationNode.Block);
         }
 
         protected virtual void VisitProgramNode(ProgramNode<T> programNode)
@@ -199,7 +199,7 @@ namespace InterpretationMachination.PascalInterpreter
             return null;
         }
 
-        protected virtual object VisitNumericNode(NumNode<T> node)
+        protected virtual object VisitNumericNode(LiteralNode<T> node)
         {
             return null;
         }
