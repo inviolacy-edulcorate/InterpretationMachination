@@ -452,5 +452,25 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             Assert.Equal(13d, subject.GlobalScope.Top["i"]);
             Assert.Equal(false, subject.GlobalScope.Top["l"]);
         }
+
+        [Fact]
+        public void TestInterpretStringConcat()
+        {
+            // Arrange
+            var subject = new SimplePascalInterpreter();
+
+            // Act
+            subject.Interpret(@"program Main;
+                    	var text1, text2, text3 : string;
+                    		
+                    begin { Main }
+                    	text1 := 'Hello';
+                    	text2 := 'World';
+                    	text3 := text1 + ' ' + text2 + '!';
+                    end.  { Main }");
+
+            // Assert
+            Assert.Equal("Hello World!", subject.GlobalScope.Top["text3"]);
+        }
     }
 }

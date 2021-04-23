@@ -94,7 +94,7 @@ namespace InterpretationMachination.PascalInterpreter
             }
         }
 
-        protected override object VisitVariableNode(VarNode<PascalTokenType> varNode)
+        protected override ValueResult VisitVariableNode(VarNode<PascalTokenType> varNode)
         {
             // Test that the symbol has been declared before usage.
             var symbol = CurrentScope.LookupSymbol(varNode.Name);
@@ -211,7 +211,7 @@ namespace InterpretationMachination.PascalInterpreter
         /// Tests that the arguments are the same amount of as the definition.
         /// </summary>
         /// <param name="functionCallNode"></param>
-        protected override object VisitFunctionCallNode(FunctionCallNode<PascalTokenType> functionCallNode)
+        protected override ValueResult VisitFunctionCallNode(FunctionCallNode<PascalTokenType> functionCallNode)
         {
             var symbol = CurrentScope.LookupSymbol(functionCallNode.FunctionName);
 

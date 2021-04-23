@@ -1,5 +1,6 @@
 ﻿using System;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
+using InterpretationMachination.DataStructures.SymbolTable;
 using InterpretationMachination.PascalInterpreter.AstNodes;
 
 namespace InterpretationMachination.PascalInterpreter
@@ -15,7 +16,7 @@ namespace InterpretationMachination.PascalInterpreter
             VisitAstNode(rootNode);
         }
 
-        protected object VisitAstNode(AstNode<T> node)
+        protected ValueResult VisitAstNode(AstNode<T> node)
         {
             if (node == null)
             {
@@ -108,7 +109,7 @@ namespace InterpretationMachination.PascalInterpreter
             VisitAstNode(whileDoNode.Statement);
         }
 
-        protected virtual object VisitIndexNode(IndexNode<T> indexNode)
+        protected virtual ValueResult VisitIndexNode(IndexNode<T> indexNode)
         {
             VisitAstNode(indexNode.Variable);
             VisitAstNode(indexNode.Expr);
@@ -142,7 +143,7 @@ namespace InterpretationMachination.PascalInterpreter
             VisitAstNode(programNode.Block);
         }
 
-        protected virtual object VisitUnaryOpNode(UnaryOpNode<T> unaryOpNode)
+        protected virtual ValueResult VisitUnaryOpNode(UnaryOpNode<T> unaryOpNode)
         {
             VisitAstNode(unaryOpNode.Factor);
 
@@ -163,7 +164,7 @@ namespace InterpretationMachination.PascalInterpreter
             VisitAstNode(assignNode.Expr);
         }
 
-        protected virtual object VisitVariableNode(VarNode<T> varNode)
+        protected virtual ValueResult VisitVariableNode(VarNode<T> varNode)
         {
             return null;
         }
@@ -191,7 +192,7 @@ namespace InterpretationMachination.PascalInterpreter
         {
         }
 
-        protected virtual object VisitBinOpNode(BinOpNode<T> node)
+        protected virtual ValueResult VisitBinOpNode(BinOpNode<T> node)
         {
             VisitAstNode(node.Left);
             VisitAstNode(node.Right);
@@ -199,12 +200,12 @@ namespace InterpretationMachination.PascalInterpreter
             return null;
         }
 
-        protected virtual object VisitNumericNode(LiteralNode<T> node)
+        protected virtual ValueResult VisitNumericNode(LiteralNode<T> node)
         {
             return null;
         }
 
-        protected virtual object VisitFunctionCallNode(FunctionCallNode<T> node)
+        protected virtual ValueResult VisitFunctionCallNode(FunctionCallNode<T> node)
         {
             if (node.Parameters != null)
             {
@@ -251,5 +252,15 @@ namespace InterpretationMachination.PascalInterpreter
             : base(string.Format(MessageFormat, node.GetType().Namespace + "." + node.GetType().Name))
         {
         }
+    }
+
+    /// <summary>
+    /// A class representing a return value of a code path.
+    /// </summary>
+    public class ValueResult
+    {
+        public Symbol Type { get; set; }
+
+        public object Value { get; set; }
     }
 }

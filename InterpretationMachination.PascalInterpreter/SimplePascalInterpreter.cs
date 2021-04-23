@@ -45,62 +45,149 @@ namespace InterpretationMachination.PascalInterpreter
             //GlobalScope.Pop();
         }
 
-        protected override object VisitBinOpNode(BinOpNode<PascalTokenType> binOpNode)
+        protected override ValueResult VisitBinOpNode(BinOpNode<PascalTokenType> binOpNode)
         {
+            var left = VisitAstNode(binOpNode.Left);
+            var right = VisitAstNode(binOpNode.Right);
+
             // Handle Bools first.
             if (binOpNode.Token.Type == PascalTokenType.Equals)
             {
-                return VisitAstNode(binOpNode.Left).ToString() == VisitAstNode(binOpNode.Right).ToString();
+                return CreateBooleanValueResult(
+                    left.Value.ToString() == right.Value.ToString()
+                );
             }
 
-            var la = InterpretAstNodeAsDouble(binOpNode.Left);
-            var ra = InterpretAstNodeAsDouble(binOpNode.Right);
-
-            switch (binOpNode.Token.Type)
+            if (left.Type.Name == "STRING" || right.Type.Name == "STRING")
             {
-                case PascalTokenType.OpAdd:
-                    return la + ra;
-                case PascalTokenType.OpSub:
-                    return la - ra;
-                case PascalTokenType.OpDiv:
-                    return la / ra;
-                case PascalTokenType.OpIntDiv:
-                    return Math.Floor(la / ra);
-                case PascalTokenType.OpMul:
-                    return la * ra;
-                default:
-                    throw new InvalidOperationException(
-                        $"BinOp contains the unknown type of '{binOpNode.Token.Type}'.");
+                var ld = left.Value.ToString();
+                var rd = right.Value.ToString();
+
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                switch (binOpNode.Token.Type)
+                {
+                    case PascalTokenType.OpAdd:
+                        return CreateStringValueResult(ld + rd);
+                    default:
+                        throw new InvalidOperationException(
+                            $"BinOp contains the unknown type of '{binOpNode.Token.Type}' for types '{left.Type.Name}' and '{right.Type.Name}'.");
+                }
             }
-        }
 
-        protected override object VisitNumericNode(LiteralNode<PascalTokenType> node)
-        {
-            return node.Value;
-        }
-
-        protected override object VisitVariableNode(VarNode<PascalTokenType> varNode)
-        {
-            return GlobalScope[varNode.Name];
-        }
-
-        protected override object VisitUnaryOpNode(UnaryOpNode<PascalTokenType> unaryOpNode)
-        {
-            switch (unaryOpNode.Token.Type)
+            // If we're dealing with reals anywhere, make the result a real as well.
+            if (left.Type.Name == "REAL" || right.Type.Name == "REAL")
             {
-                case PascalTokenType.OpAdd:
-                    return InterpretAstNodeAsDouble(unaryOpNode.Factor);
-                case PascalTokenType.OpSub:
-                    return -(InterpretAstNodeAsDouble(unaryOpNode.Factor));
+                var ld = Convert.ToDouble(left.Value);
+                var rd = Convert.ToDouble(right.Value);
+
+                double result;
+
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                switch (binOpNode.Token.Type)
+                {
+                    case PascalTokenType.OpAdd:
+                        result = ld + rd;
+                        break;
+                    case PascalTokenType.OpSub:
+                        result = ld - rd;
+                        break;
+                    case PascalTokenType.OpDiv:
+                        result = ld / rd;
+                        break;
+                    case PascalTokenType.OpIntDiv:
+                        result = Math.Floor(ld / rd);
+                        break;
+                    case PascalTokenType.OpMul:
+                        result = ld * rd;
+                        break;
+                    default:
+                        throw new InvalidOperationException(
+                            $"BinOp contains the unknown type of '{binOpNode.Token.Type}'.");
+                }
+
+                return CreateRealValueResult(result);
+            }
+
+            if (left.Type.Name == "INTEGER" || right.Type.Name == "INTEGER")
+            {
+                var ld = Convert.ToInt32(left.Value);
+                var rd = Convert.ToInt32(right.Value);
+
+                int result;
+
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                switch (binOpNode.Token.Type)
+                {
+                    case PascalTokenType.OpAdd:
+                        result = ld + rd;
+                        break;
+                    case PascalTokenType.OpSub:
+                        result = ld - rd;
+                        break;
+                    case PascalTokenType.OpDiv:
+                        // TODO: Breaking the pattern here, because int/int can result in double.
+                        return CreateRealValueResult((double) ld / rd);
+                    case PascalTokenType.OpIntDiv:
+                        result = (int) Math.Floor((double) ld / rd);
+                        break;
+                    case PascalTokenType.OpMul:
+                        result = ld * rd;
+                        break;
+                    default:
+                        throw new InvalidOperationException(
+                            $"BinOp contains the unknown type of '{binOpNode.Token.Type}'.");
+                }
+
+                return CreateRealValueResult(result);
+            }
+
+            // TODO: No operation types applied.
+            throw new InvalidOperationException(
+                $"No binary operation can be applied on {left.Type.Name} and {right.Type.Name}");
+        }
+
+        protected override ValueResult VisitNumericNode(LiteralNode<PascalTokenType> node)
+        {
+            return CreateValueResult(node.Type, node.Value);
+        }
+
+        protected override ValueResult VisitVariableNode(VarNode<PascalTokenType> varNode)
+        {
+            var type = GlobalScope.Top.SymbolTable.LookupSymbol(varNode.Name);
+
+            return CreateValueResult(type.Type.Name, GlobalScope[varNode.Name]);
+        }
+
+        protected override ValueResult VisitUnaryOpNode(UnaryOpNode<PascalTokenType> unaryOpNode)
+        {
+            var val = VisitAstNode(unaryOpNode.Factor);
+            switch (val.Value)
+            {
+                case int v:
+                    return unaryOpNode.Token.Type switch
+                    {
+                        PascalTokenType.OpAdd => VisitAstNode(unaryOpNode.Factor),
+                        PascalTokenType.OpSub => CreateValueResult(val.Type.Name, -v),
+                        _ => throw new InvalidOperationException(
+                            $"UnaryOp contains the unknown type of '{unaryOpNode.Token.Type}'.")
+                    };
+                case double v:
+                    return unaryOpNode.Token.Type switch
+                    {
+                        PascalTokenType.OpAdd => VisitAstNode(unaryOpNode.Factor),
+                        PascalTokenType.OpSub => CreateValueResult(val.Type.Name, -v),
+                        _ => throw new InvalidOperationException(
+                            $"UnaryOp contains the unknown type of '{unaryOpNode.Token.Type}'.")
+                    };
                 default:
                     throw new InvalidOperationException(
-                        $"UnaryOp contains the unknown type of '{unaryOpNode.Token.Type}'.");
+                        $"Unary Operation can't be applied to type {val.Type.Name}");
             }
         }
 
         protected override void VisitAssignNode(AssignNode<PascalTokenType> assignNode)
         {
-            GlobalScope[assignNode.Variable.Name] = VisitAstNode(assignNode.Expr);
+            GlobalScope[assignNode.Variable.Name] = VisitAstNode(assignNode.Expr).Value;
         }
 
         protected override void VisitProcedureNode(ProcedureDeclarationNode<PascalTokenType> procedureDeclarationNode)
@@ -124,7 +211,7 @@ namespace InterpretationMachination.PascalInterpreter
                     {
                         case "WRITELN":
                             // TODO: Replace with function.
-                            Console.WriteLine("WRITELN: " + VisitAstNode(procedureCallNode.Parameters[0]));
+                            Console.WriteLine("WRITELN: " + VisitAstNode(procedureCallNode.Parameters[0]).Value);
                             break;
                         default:
                             // TODO: Better exception.
@@ -138,13 +225,15 @@ namespace InterpretationMachination.PascalInterpreter
                 throw new InvalidOperationException();
             }
 
-            var stackFrame = new StackFrame(procedureSymbol.SymbolTable, procedureSymbol.Name,
+            var stackFrame = new StackFrame(
+                procedureSymbol.SymbolTable, 
+                procedureSymbol.Name,
                 GlobalScope.Top.Level + 1);
 
             for (var i = 0; i < procedureSymbol.Parameters.Count; i++)
             {
                 var parameterSymbol = procedureSymbol.Parameters[i];
-                stackFrame[parameterSymbol.Name] = VisitAstNode(procedureCallNode.Parameters[i]);
+                stackFrame[parameterSymbol.Name] = VisitAstNode(procedureCallNode.Parameters[i]).Value;
             }
 
             GlobalScope.Push(stackFrame);
@@ -154,7 +243,7 @@ namespace InterpretationMachination.PascalInterpreter
             GlobalScope.Pop();
         }
 
-        protected override object VisitFunctionCallNode(FunctionCallNode<PascalTokenType> node)
+        protected override ValueResult VisitFunctionCallNode(FunctionCallNode<PascalTokenType> node)
         {
             var lookupSymbol = GlobalScope.Top.SymbolTable.LookupSymbol(node.FunctionName);
 
@@ -167,9 +256,9 @@ namespace InterpretationMachination.PascalInterpreter
                     {
                         case "LENGTH":
                             var str = VisitAstNode(node.Parameters[0]);
-                            if (str is string strstr)
+                            if (str.Type.Name == "STRING" && str.Value is string strstr)
                             {
-                                return strstr.Length;
+                                return CreateIntegerValueResult(strstr.Length);
                             }
 
                             // TODO: Length param String is not string.
@@ -177,9 +266,9 @@ namespace InterpretationMachination.PascalInterpreter
 
                         case "READFILE":
                             var path = VisitAstNode(node.Parameters[0]);
-                            if (path is string pathStr)
+                            if (path.Type.Name == "STRING" && path.Value is string pathStr)
                             {
-                                return File.ReadAllText(pathStr);
+                                return CreateStringValueResult(File.ReadAllText(pathStr));
                             }
 
                             // TODO: Length param String is not string.
@@ -200,22 +289,35 @@ namespace InterpretationMachination.PascalInterpreter
             for (var i = 0; i < functionSymbol.Parameters.Count; i++)
             {
                 var parameterSymbol = functionSymbol.Parameters[i];
-                stackFrame[parameterSymbol.Name] = VisitAstNode(node.Parameters[i]);
+                stackFrame[parameterSymbol.Name] = VisitAstNode(node.Parameters[i]).Value;
             }
 
             GlobalScope.Push(stackFrame);
 
             VisitAstNode(functionSymbol.FunctionBody);
 
-            var result = GlobalScope.Pop()[functionSymbol.Name];
+            GlobalScope.Pop();
+            var result = stackFrame[functionSymbol.Name];
+            var resultType = functionSymbol.TypeSymbol;
 
-            return result;
+            return new ValueResult
+            {
+                Value = result,
+                Type = resultType
+            };
         }
 
         protected override void VisitIfThenNode(IfThenNode<PascalTokenType> ifThenNode)
         {
             // Evaluate the condition.
-            var condition = (bool) VisitAstNode(ifThenNode.Condition);
+            var conditionValue = VisitAstNode(ifThenNode.Condition);
+            if (conditionValue.Type.Name != "BOOLEAN")
+            {
+                // TODO TYpe of condition is not boolean when it should be.
+                throw new InvalidOperationException();
+            }
+
+            var condition = (bool) conditionValue.Value;
 
             // If true, run the Then.
             if (condition)
@@ -232,30 +334,26 @@ namespace InterpretationMachination.PascalInterpreter
             }
         }
 
-        protected override object VisitIndexNode(IndexNode<PascalTokenType> indexNode)
+        protected override ValueResult VisitIndexNode(IndexNode<PascalTokenType> indexNode)
         {
             var variable = VisitVariableNode(indexNode.Variable);
             var index = VisitAstNode(indexNode.Expr);
 
-            if (variable is string str)
+            if (variable.Type.Name == "STRING")
             {
                 int i;
-                if (index is double d)
+                if (index.Type.Name == "INTEGER")
                 {
-                    i = (int) d;
-                }
-                else if (index is int iInt)
-                {
-                    i = iInt;
+                    i = (int) index.Value;
                 }
                 else
                 {
-                    // TODO: index is not integer.
+                    // TODO: index is not integer. Only INT indexing is allowed currently.
                     throw new InvalidOperationException();
                 }
 
                 // Convert to string before returning.
-                return str[i].ToString();
+                return CreateStringValueResult(((string) variable.Value)[i].ToString());
             }
 
             // TODO: variable is not supported indexing, or index is not integer.
@@ -265,8 +363,21 @@ namespace InterpretationMachination.PascalInterpreter
         protected override void VisitWhileDoNode(WhileDoNode<PascalTokenType> whileDoNode)
         {
             // If true, run the Then.
-            while ((bool) VisitAstNode(whileDoNode.Condition))
+            while (true)
             {
+                var conditionResult = VisitAstNode(whileDoNode.Condition);
+                if (conditionResult.Type.Name != "BOOLEAN")
+                {
+                    // TODO: Only boolean conditions allowed.
+                    throw new InvalidOperationException();
+                }
+
+                // Condition false? break;
+                if (!(bool) conditionResult.Value)
+                {
+                    break;
+                }
+
                 VisitAstNode(whileDoNode.Statement);
             }
         }
@@ -277,6 +388,27 @@ namespace InterpretationMachination.PascalInterpreter
             double? vd = v as double?;
             int? vi = v as int?;
             return vd ?? Convert.ToDouble(vi.Value);
+        }
+
+        private ValueResult CreateBooleanValueResult(bool value)
+            => CreateValueResult("BOOLEAN", value);
+
+        private ValueResult CreateRealValueResult(double value)
+            => CreateValueResult("REAL", value);
+
+        private ValueResult CreateStringValueResult(string value)
+            => CreateValueResult("STRING", value);
+
+        private ValueResult CreateIntegerValueResult(int value)
+            => CreateValueResult("INTEGER", value);
+
+        private ValueResult CreateValueResult(string type, object value)
+        {
+            return new()
+            {
+                Type = GlobalScope.Top.SymbolTable.LookupSymbol(type),
+                Value = value
+            };
         }
     }
 }

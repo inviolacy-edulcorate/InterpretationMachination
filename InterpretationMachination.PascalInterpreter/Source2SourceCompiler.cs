@@ -102,7 +102,7 @@ namespace InterpretationMachination.PascalInterpreter
             CurrentScope = CurrentScope.ParentScope;
         }
 
-        protected override object VisitUnaryOpNode(UnaryOpNode<PascalTokenType> unaryOpNode)
+        protected override ValueResult VisitUnaryOpNode(UnaryOpNode<PascalTokenType> unaryOpNode)
         {
             base.VisitUnaryOpNode(unaryOpNode);
 
@@ -142,7 +142,7 @@ namespace InterpretationMachination.PascalInterpreter
             VisitAstNode(assignNode.Expr);
         }
 
-        protected override object VisitVariableNode(VarNode<PascalTokenType> varNode)
+        protected override ValueResult VisitVariableNode(VarNode<PascalTokenType> varNode)
         {
             Output +=
                 $"<{varNode.Name}{CurrentScope.LookupSymbol(varNode.Name).ScopeLevel}:{CurrentScope.LookupSymbol(varNode.Name).Type.Name}>";
@@ -178,7 +178,7 @@ namespace InterpretationMachination.PascalInterpreter
             base.VisitTypeNode(typeNode);
         }
 
-        protected override object VisitBinOpNode(BinOpNode<PascalTokenType> node)
+        protected override ValueResult VisitBinOpNode(BinOpNode<PascalTokenType> node)
         {
             VisitAstNode(node.Left);
             switch (node.Token.Type)
@@ -208,7 +208,7 @@ namespace InterpretationMachination.PascalInterpreter
             return null;
         }
 
-        protected override object VisitNumericNode(LiteralNode<PascalTokenType> node)
+        protected override ValueResult VisitNumericNode(LiteralNode<PascalTokenType> node)
         {
             base.VisitNumericNode(node);
 
