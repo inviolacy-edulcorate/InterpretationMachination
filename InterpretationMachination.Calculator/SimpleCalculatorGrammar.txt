@@ -1,0 +1,4 @@
+﻿expr	: term((ADD|SUB)term)*
+term	: pterm((MUL|DIV)pterm)*
+pterm	: ((PRO)expr(PRC)|factor)
+factor	: (ADD|SUB)pterm|INTEGER

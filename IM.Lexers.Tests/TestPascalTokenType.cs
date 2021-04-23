@@ -1,0 +1,51 @@
+﻿namespace IM.Lexers.Tests
+{
+    public enum TestPascalTokenType
+    {
+        None,
+        EndOfFile,
+        Whitespace,
+
+        ConstInteger,
+        ConstReal,
+        ConstString,
+
+        OpAdd,
+        OpSub,
+        OpDiv,
+        OpIntDiv,
+        OpMul,
+        OpAssign,
+
+        KwBegin,
+        KwEnd,
+        KwProgram,
+        KwVar,
+        KwProcedure,
+        KwFunction,
+        KwIf,
+        KwThen,
+        KwElse,
+        KwFalse,
+        KwTrue,
+
+        TypeInteger,
+        TypeReal,
+        TypeString,
+        TypeBoolean,
+
+        Id,
+
+        SemCol,
+        Dot,
+        ParL,
+        ParR,
+        Colon,
+        Comma,
+        Equals,
+        Brl,
+        Brr,
+        KwWhile,
+        KwDo
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "InterpretationMachination.ConsoleApp": {
+      "commandName": "Project",
+      "commandLineArgs": "../../../../PascalFiles/AOC/2015/01-1.pas"
+    }
+  }
+}

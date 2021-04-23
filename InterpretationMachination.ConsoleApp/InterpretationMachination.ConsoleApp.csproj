@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InterpretationMachination.Calculator\InterpretationMachination.Calculator.csproj" />
+    <ProjectReference Include="..\InterpretationMachination.PascalInterpreter\InterpretationMachination.PascalInterpreter.csproj" />
+  </ItemGroup>
+
+</Project>
