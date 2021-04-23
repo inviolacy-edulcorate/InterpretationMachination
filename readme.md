@@ -60,6 +60,7 @@ After this, I proceeded to do my own thing (until the next part comes out).
  - [x] Add string length function (Length()).
  - [x] While loop support.
  - [x] Extract Lexer into more generic class.
+ - [ ] Implement typed operators (+) to support different actions when called with different types.
 
 ## Notes
 There are 2 kinds of expressions/grammar rules/somethings.
