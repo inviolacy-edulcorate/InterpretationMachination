@@ -66,3 +66,16 @@ There are 2 kinds of expressions/grammar rules/somethings.
 1. Those which return something/are to be used (expr and below).
 2. Those which are collections/higher structures. Don't contain logic and handle program flow.
 Should these have different implementations? Are they different?
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "dotnet run",
+            "command": "dotnet run --project 'InterpretationMachination.ConsoleApp' --launch-profile 'InterpretationMachination.ConsoleApp' './PascalFiles/AOC/2015/01-2.pas'",
+            "type": "shell"
+        }
+    ]
+}
+```

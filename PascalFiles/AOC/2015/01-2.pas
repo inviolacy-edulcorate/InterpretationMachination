@@ -8,7 +8,7 @@ begin { Main }
 	ex01 := ')'; {1}
 	ex02 := '()())'; {5}
 
-	text := ReadFile('Input\01.txt');
+	text := ReadFile('Input/01.txt');
 	{text := ex02;}
 	inputLength := Length(text);
 	keepLoopGoing := true;
