@@ -75,6 +75,11 @@ Should these have different implementations? Are they different?
             "label": "dotnet run",
             "command": "dotnet run --project 'InterpretationMachination.ConsoleApp' --launch-profile 'InterpretationMachination.ConsoleApp' './PascalFiles/AOC/2015/01-2.pas'",
             "type": "shell"
+        },
+        {
+            "label": "dotnet test",
+            "command": "dotnet test -v q",
+            "type": "shell"
         }
     ]
 }
