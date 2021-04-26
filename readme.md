@@ -68,3 +68,14 @@ There are 2 kinds of expressions/grammar rules/somethings.
 1. Those which return something/are to be used (expr and below).
 2. Those which are collections/higher structures. Don't contain logic and handle program flow.
 Should these have different implementations? Are they different?
+
+## How to run the AOC code
+1. Go to https://adventofcode.com/ and sign in
+2. Go to any of the input download pages
+3. Open the dev-tools of your browser
+4. Open the "network" tab and refresh the page
+5. Copy the value of the "Cookie" header (without session=, just the hash)
+6. Copy cookiesession.example to cookiesession in PascalFiles/AOC
+7. Paste the hash value of the cookie in this cookiesession file
+8. Run the dl.sh script
+9. All the input files are now loaded in the YYYY/Input folder
