@@ -36,6 +36,8 @@ namespace InterpretationMachination.PascalInterpreter
                     ["="] = PascalTokenType.Equals,
                     ["["] = PascalTokenType.Brl,
                     ["]"] = PascalTokenType.Brr,
+                    ["<"] = PascalTokenType.LessThan,
+                    [">"] = PascalTokenType.GreaterThan,
                 };
                 ts.IntegerTypes.Add(PascalTokenType.ConstInteger);
                 ts.RealTypes.Add(PascalTokenType.ConstReal);
@@ -510,7 +512,7 @@ namespace InterpretationMachination.PascalInterpreter
                 term = new BinOpNode<PascalTokenType>
                 {
                     Left = term,
-                    Token = token, 
+                    Token = token,
                     Right = Term(),
                     Type = term.Type //TODO: not 100% sure, might be different.
                 };
@@ -700,12 +702,16 @@ namespace InterpretationMachination.PascalInterpreter
             var factor = AddSub();
 
             while (
-                CurrentToken.Type == PascalTokenType.Equals
+                CurrentToken.Type == PascalTokenType.Equals ||
+                CurrentToken.Type == PascalTokenType.LessThan ||
+                CurrentToken.Type == PascalTokenType.GreaterThan
             )
             {
                 var token = CurrentToken;
 
-                Eat(PascalTokenType.Equals);
+                Eat(PascalTokenType.Equals,
+                    PascalTokenType.GreaterThan,
+                    PascalTokenType.LessThan);
 
                 factor = new BinOpNode<PascalTokenType>
                 {

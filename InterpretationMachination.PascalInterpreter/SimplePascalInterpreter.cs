@@ -50,12 +50,81 @@ namespace InterpretationMachination.PascalInterpreter
             var left = VisitAstNode(binOpNode.Left);
             var right = VisitAstNode(binOpNode.Right);
 
-            // Handle Bools first.
+            // Booleans first.
             if (binOpNode.Token.Type == PascalTokenType.Equals)
             {
                 return CreateBooleanValueResult(
                     left.Value.ToString() == right.Value.ToString()
                 );
+            }
+
+            if (binOpNode.Token.Type == PascalTokenType.GreaterThan)
+            {
+                if (left.Type.Name == "INTEGER" && right.Type.Name == "INTEGER")
+                {
+                    return CreateBooleanValueResult(
+                        ((int) left.Value) > ((int) right.Value)
+                    );
+                }
+
+                if (left.Type.Name == "REAL" && right.Type.Name == "REAL")
+                {
+                    return CreateBooleanValueResult(
+                        ((double) left.Value) > ((double) right.Value)
+                    );
+                }
+
+                if (left.Type.Name == "INTEGER" && right.Type.Name == "REAL")
+                {
+                    Console.WriteLine(left.Value.GetType());
+                    return CreateBooleanValueResult(
+                        ((int) left.Value) > ((double) right.Value)
+                    );
+                }
+
+                if (left.Type.Name == "REAL" && right.Type.Name == "INTEGER")
+                {
+                    return CreateBooleanValueResult(
+                        ((double) left.Value) > ((int) right.Value)
+                    );
+                }
+
+                // TODO: Invalid < or > comparison types
+                throw new InvalidOperationException();
+            }
+
+            if (binOpNode.Token.Type == PascalTokenType.LessThan)
+            {
+                if (left.Type.Name == "INTEGER" && right.Type.Name == "INTEGER")
+                {
+                    return CreateBooleanValueResult(
+                        ((int)left.Value) < ((int)right.Value)
+                    );
+                }
+
+                if (left.Type.Name == "REAL" && right.Type.Name == "REAL")
+                {
+                    return CreateBooleanValueResult(
+                        ((double)left.Value) < ((double)right.Value)
+                    );
+                }
+
+                if (left.Type.Name == "INTEGER" && right.Type.Name == "REAL")
+                {
+                    return CreateBooleanValueResult(
+                        ((int)left.Value) < ((double)right.Value)
+                    );
+                }
+
+                if (left.Type.Name == "REAL" && right.Type.Name == "INTEGER")
+                {
+                    return CreateBooleanValueResult(
+                        ((double)left.Value) < ((int)right.Value)
+                    );
+                }
+
+                // TODO: Invalid < or > comparison types
+                throw new InvalidOperationException();
             }
 
             if (left.Type.Name == "STRING" || right.Type.Name == "STRING")
@@ -138,7 +207,7 @@ namespace InterpretationMachination.PascalInterpreter
                             $"BinOp contains the unknown type of '{binOpNode.Token.Type}'.");
                 }
 
-                return CreateRealValueResult(result);
+                return CreateIntegerValueResult(result);
             }
 
             // TODO: No operation types applied.
@@ -404,7 +473,7 @@ namespace InterpretationMachination.PascalInterpreter
 
         private ValueResult CreateValueResult(string type, object value)
         {
-            return new()
+            return new ()
             {
                 Type = GlobalScope.Top.SymbolTable.LookupSymbol(type),
                 Value = value

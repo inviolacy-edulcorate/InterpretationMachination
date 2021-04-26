@@ -43,6 +43,8 @@
         Colon,
         Comma,
         Equals,
+        GreaterThan,
+        LessThan,
         Brl,
         Brr,
         KwWhile,

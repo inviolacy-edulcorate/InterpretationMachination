@@ -16,19 +16,22 @@ program Main;
 
 		while keepLoopGoing do
 		begin
-			if (i - inputLength = 0) then keepLoopGoing := false
+			if (i > inputLength - 1) then keepLoopGoing := false
 			else
 			begin
 				{Break out if we find an X}
-				if (text[i] = 'x') then keepLoopGoing := false;
-
-				number := number + text[i];
+				if (text[i] = 'x') then keepLoopGoing := false
+                {Otherwise, add more to the string.}
+                else
+                begin
+                    number := number + text[i];
 				
-				i := i + 1;
+                    i := i + 1;
+                end;
 			end;
 		end;
 
-		GetNumber := i;
+		GetNumber := number;
 	end;
 
 begin { Main }
@@ -45,14 +48,15 @@ begin { Main }
 	
 	while keepLoopGoing do
 	begin
-		if (i - inputLength = 0) then keepLoopGoing := false
+		if (i > inputLength - 1) then keepLoopGoing := false
 		else
 		begin
 			lstr := GetNumber(text, i);
+            
+            writeln(lstr);
 
 			i := i + Length(lstr);
-			
-			i := i + 1;
+            i := i + 1; {Add 1 more to skip the x}
 		end;
 	end;
 	

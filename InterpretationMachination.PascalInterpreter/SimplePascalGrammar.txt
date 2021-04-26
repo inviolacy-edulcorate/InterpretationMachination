@@ -23,7 +23,7 @@ procedure-call			: variable PARL (expr (COMMA expr)*)? PARR
 function-call			: variable PARL (expr (COMMA expr)*)? PARR
 while-loop				: WHILE expr DO statement
 index					: variable BRL expr BRR
-expr					: add-sub((EQUALS)add-sub)*
+expr					: add-sub((EQUALS|GT|LT)add-sub)*
 add-sub					: term((ADD|SUB)term)*
 term					: factor((MUL|DIV|INTDIV)factor)*
 factor					: ADD factor
@@ -55,6 +55,8 @@ COLON			: ":"
 EQUALS			: "="
 BRL				: "["
 BRR				: "]"
+GT				: ">"
+LT				: "<"
 BEGIN			: "BEGIN"
 END				: "END"
 TYPEINTEGER		: "INTEGER"

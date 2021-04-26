@@ -29,6 +29,8 @@ namespace IM.Lexers.Tests
                     ["="] = TestPascalTokenType.Equals,
                     ["["] = TestPascalTokenType.Brl,
                     ["]"] = TestPascalTokenType.Brr,
+                    ["<"] = TestPascalTokenType.LessThan,
+                    [">"] = TestPascalTokenType.GreaterThan,
                 };
                 ts.IntegerTypes.Add(TestPascalTokenType.ConstInteger);
                 ts.RealTypes.Add(TestPascalTokenType.ConstReal);
