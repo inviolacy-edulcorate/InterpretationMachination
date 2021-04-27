@@ -98,28 +98,28 @@ namespace InterpretationMachination.PascalInterpreter
                 if (left.Type.Name == "INTEGER" && right.Type.Name == "INTEGER")
                 {
                     return CreateBooleanValueResult(
-                        ((int)left.Value) < ((int)right.Value)
+                        ((int) left.Value) < ((int) right.Value)
                     );
                 }
 
                 if (left.Type.Name == "REAL" && right.Type.Name == "REAL")
                 {
                     return CreateBooleanValueResult(
-                        ((double)left.Value) < ((double)right.Value)
+                        ((double) left.Value) < ((double) right.Value)
                     );
                 }
 
                 if (left.Type.Name == "INTEGER" && right.Type.Name == "REAL")
                 {
                     return CreateBooleanValueResult(
-                        ((int)left.Value) < ((double)right.Value)
+                        ((int) left.Value) < ((double) right.Value)
                     );
                 }
 
                 if (left.Type.Name == "REAL" && right.Type.Name == "INTEGER")
                 {
                     return CreateBooleanValueResult(
-                        ((double)left.Value) < ((int)right.Value)
+                        ((double) left.Value) < ((int) right.Value)
                     );
                 }
 
@@ -342,7 +342,9 @@ namespace InterpretationMachination.PascalInterpreter
 
                             // TODO: Length param String is not string.
                             throw new InvalidOperationException();
-
+                        case "STRTOINT":
+                            var strToConvert = VisitAstNode(node.Parameters[0]);
+                            return CreateIntegerValueResult(Convert.ToInt32(strToConvert.Value));
                         default:
                             // TODO: Better exception.
                             throw new NotImplementedException();
@@ -449,14 +451,6 @@ namespace InterpretationMachination.PascalInterpreter
 
                 VisitAstNode(whileDoNode.Statement);
             }
-        }
-
-        private double InterpretAstNodeAsDouble(AstNode<PascalTokenType> node)
-        {
-            object v = VisitAstNode(node);
-            double? vd = v as double?;
-            int? vi = v as int?;
-            return vd ?? Convert.ToDouble(vi.Value);
         }
 
         private ValueResult CreateBooleanValueResult(bool value)

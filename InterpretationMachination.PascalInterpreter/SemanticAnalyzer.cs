@@ -37,6 +37,12 @@ namespace InterpretationMachination.PascalInterpreter
                     new VariableSymbol("inputString", CurrentScope.LookupSymbol("STRING"))
                 },
                 CurrentScope.LookupSymbol("INTEGER")));
+            CurrentScope.DeclareSymbol(new BuiltinFunctionSymbol("STRTOINT",
+                new List<VariableSymbol>
+                {
+                    new VariableSymbol("inputString", CurrentScope.LookupSymbol("STRING"))
+                },
+                CurrentScope.LookupSymbol("INTEGER")));
         }
 
         public ScopedSymbolTable CurrentScope { get; private set; }
