@@ -1,4 +1,12 @@
 
+# ============================================================================================
+# My gitignore entries
+
+# Ignored because I ususally don't work on vscode. Example tasks.json is included in readme.
+.vscode/
+
+# ============================================================================================
+
 # Created by https://www.toptal.com/developers/gitignore/api/csharp,dotnetcore,visualstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=csharp,dotnetcore,visualstudio
 

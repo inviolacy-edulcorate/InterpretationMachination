@@ -80,3 +80,22 @@ Should these have different implementations? Are they different?
 7. Paste the hash value of the cookie in this cookiesession file
 8. Run the dl.sh script
 9. All the input files are now loaded in the YYYY/Input folder
+
+## Example tasks.json
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "dotnet run",
+            "command": "dotnet run --project 'InterpretationMachination.ConsoleApp' --launch-profile 'InterpretationMachination.ConsoleApp' './PascalFiles/AOC/2015/01-2.pas'",
+            "type": "shell"
+        },
+        {
+            "label": "dotnet test",
+            "command": "dotnet test -v q",
+            "type": "shell"
+        }
+    ]
+}
+```
