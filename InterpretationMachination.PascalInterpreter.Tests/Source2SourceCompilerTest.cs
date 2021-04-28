@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace InterpretationMachination.PascalInterpreter.Tests
@@ -13,73 +14,44 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             var subject = new Source2SourceCompiler();
 
             // Act
-            subject.Compile(@"program Main;
-   var b, x, y : real;
-   var z : integer;
+            subject.Compile(@"program Main;" + Environment.NewLine + @"   var b, x, y : real;" + Environment.NewLine +
+                            @"   var z : integer;" + Environment.NewLine + @"" + Environment.NewLine +
+                            @"   procedure AlphaA(a : integer);" + Environment.NewLine + @"      var b : integer;" +
+                            Environment.NewLine + @"" + Environment.NewLine + @"      procedure Beta(c : integer);" +
+                            Environment.NewLine + @"         var y : integer;" + Environment.NewLine + @"" +
+                            Environment.NewLine + @"         procedure Gamma(c : integer);" + Environment.NewLine +
+                            @"            var x : integer;" + Environment.NewLine + @"         begin { Gamma }" +
+                            Environment.NewLine + @"            x := a + b - c * x / y div z;" + Environment.NewLine +
+                            @"         end;  { Gamma }" + Environment.NewLine + @"" + Environment.NewLine +
+                            @"      begin { Beta }" + Environment.NewLine + @"" + Environment.NewLine +
+                            @"      end;  { Beta }" + Environment.NewLine + @"" + Environment.NewLine +
+                            @"   begin { AlphaA }" + Environment.NewLine + @"" + Environment.NewLine +
+                            @"   end;  { AlphaA }" + Environment.NewLine + @"" + Environment.NewLine +
+                            @"   procedure AlphaB(a : integer);" + Environment.NewLine + @"      var c : real;" +
+                            Environment.NewLine + @"   begin { AlphaB }" + Environment.NewLine + @"      c := a + b;" +
+                            Environment.NewLine + @"   end;  { AlphaB }" + Environment.NewLine + @"" +
+                            Environment.NewLine + @"begin { Main }" + Environment.NewLine + @"end.  { Main }");
 
-   procedure AlphaA(a : integer);
-      var b : integer;
-
-      procedure Beta(c : integer);
-         var y : integer;
-
-         procedure Gamma(c : integer);
-            var x : integer;
-         begin { Gamma }
-            x := a + b - c * x / y div z;
-         end;  { Gamma }
-
-      begin { Beta }
-
-      end;  { Beta }
-
-   begin { AlphaA }
-
-   end;  { AlphaA }
-
-   procedure AlphaB(a : integer);
-      var c : real;
-   begin { AlphaB }
-      c := a + b;
-   end;  { AlphaB }
-
-begin { Main }
-end.  { Main }");
-            
             // Assert
-            Assert.Equal(@"program Main0;
-   var b1 : REAL0;
-   var x1 : REAL0;
-   var y1 : REAL0;
-   var z1 : INTEGER0;
-   procedure AlphaA1(a2 : INTEGER0);
-      var b2 : INTEGER0;
-      procedure Beta2(c3 : INTEGER0);
-         var y3 : INTEGER0;
-         procedure Gamma3(c4 : INTEGER0);
-            var x4 : INTEGER0;
-
-         begin
-            <x4:INTEGER> := <a2:INTEGER> + <b2:INTEGER> - <c4:INTEGER> * <x4:INTEGER> / <y3:INTEGER> div <z1:INTEGER>;
-         end; {END OF Gamma}
-
-      begin
-
-      end; {END OF Beta}
-
-   begin
-
-   end; {END OF AlphaA}
-   procedure AlphaB1(a2 : INTEGER0);
-      var c2 : REAL0;
-
-   begin
-      <c2:REAL> := <a2:INTEGER> + <b1:REAL>;
-   end; {END OF AlphaB}
-
-begin
-
-end. {END OF Main}", subject.Output);
+            Assert.Equal(
+                @"program Main0;" + Environment.NewLine + @"   var b1 : REAL0;" + Environment.NewLine +
+                @"   var x1 : REAL0;" + Environment.NewLine + @"   var y1 : REAL0;" + Environment.NewLine +
+                @"   var z1 : INTEGER0;" + Environment.NewLine + @"   procedure AlphaA1(a2 : INTEGER0);" +
+                Environment.NewLine + @"      var b2 : INTEGER0;" + Environment.NewLine +
+                @"      procedure Beta2(c3 : INTEGER0);" + Environment.NewLine + @"         var y3 : INTEGER0;" +
+                Environment.NewLine + @"         procedure Gamma3(c4 : INTEGER0);" + Environment.NewLine +
+                @"            var x4 : INTEGER0;" + Environment.NewLine + @"" + Environment.NewLine +
+                @"         begin" + Environment.NewLine +
+                @"            <x4:INTEGER> := <a2:INTEGER> + <b2:INTEGER> - <c4:INTEGER> * <x4:INTEGER> / <y3:INTEGER> div <z1:INTEGER>;" +
+                Environment.NewLine + @"         end; {END OF Gamma}" + Environment.NewLine + @"" +
+                Environment.NewLine + @"      begin" + Environment.NewLine + @"" + Environment.NewLine +
+                @"      end; {END OF Beta}" + Environment.NewLine + @"" + Environment.NewLine + @"   begin" +
+                Environment.NewLine + @"" + Environment.NewLine + @"   end; {END OF AlphaA}" + Environment.NewLine +
+                @"   procedure AlphaB1(a2 : INTEGER0);" + Environment.NewLine + @"      var c2 : REAL0;" +
+                Environment.NewLine + @"" + Environment.NewLine + @"   begin" + Environment.NewLine +
+                @"      <c2:REAL> := <a2:INTEGER> + <b1:REAL>;" + Environment.NewLine + @"   end; {END OF AlphaB}" +
+                Environment.NewLine + @"" + Environment.NewLine + @"begin" + Environment.NewLine + @"" +
+                Environment.NewLine + @"end. {END OF Main}", subject.Output);
         }
     }
 }

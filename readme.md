@@ -48,7 +48,7 @@ After this, I proceeded to do my own thing (until the next part comes out).
  - [ ] For Loop support.
  - [ ] Procedure overloading.
  - [ ] Cleanup todos.
- - [ ] Expand print functionality to support strings etc.
+ - [x] Expand print functionality to support strings etc.
  - [x] String support.
  - [x] Add function support.
  - [ ] Allow function call without return type usage.
