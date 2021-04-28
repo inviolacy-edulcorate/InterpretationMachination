@@ -2,7 +2,7 @@
   "profiles": {
     "InterpretationMachination.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "../../../../PascalFiles/AOC/2015/02-1.pas"
+      "commandLineArgs": "../../../../PascalFiles/AOC/2015/02-2.pas"
       //"commandLineArgs": "../../../../PascalFiles/MyTest.pas"
     }
   }
