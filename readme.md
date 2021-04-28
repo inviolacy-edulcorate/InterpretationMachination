@@ -55,13 +55,14 @@ After this, I proceeded to do my own thing (until the next part comes out).
  - [ ] Add string operations.
    - [x] String Index.
  - [x] Extract all Pascal specifics out of the data structures.
- - [ ] Type handling.
+ - [x] Type handling.
  - [x] Add file reading function (ReadFile()).
  - [x] Add string length function (Length()).
  - [x] While loop support.
  - [x] Extract Lexer into more generic class.
- - [ ] Implement typed operators (+) to support different actions when called with different types.
- - [x] Implement boolean operations other than =
+ - [x] Implement typed operators (+) to support different actions when called with different types.
+ - [x] Implement boolean operations other than =.
+ - [x] Implement ASCII code character literal support (#10 = \n).
 
 ## Notes
 There are 2 kinds of expressions/grammar rules/somethings.

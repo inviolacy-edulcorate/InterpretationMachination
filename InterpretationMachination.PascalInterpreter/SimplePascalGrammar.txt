@@ -36,14 +36,16 @@ factor					: ADD factor
 						| variable
 						| function-call
 						| index
-						| CONSTSTRING
+						| string-literal
+string-literal			: CONSTSTRING
+						| HASHTAG CONSTINTEGER
 
 DOT				: "."
 SEMCOL			: ";"
 ASSIGN			: ":="
 ID				: [a-zA-Z]+
-CONSTINTEGER	: [1-9]+
-CONSTREAL		: [1-9]+
+CONSTINTEGER	: [0-9]+
+CONSTREAL		: [0-9]+
 CONSTSTRING		: "'...'"
 ADD				: "+"
 SUB				: "-"
@@ -57,6 +59,7 @@ BRL				: "["
 BRR				: "]"
 GT				: ">"
 LT				: "<"
+HASHTAG			: "#"
 BEGIN			: "BEGIN"
 END				: "END"
 TYPEINTEGER		: "INTEGER"

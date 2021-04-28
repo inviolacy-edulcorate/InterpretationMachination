@@ -344,7 +344,7 @@ namespace InterpretationMachination.PascalInterpreter
                             throw new InvalidOperationException();
                         case "STRTOINT":
                             var strToConvert = VisitAstNode(node.Parameters[0]);
-                            return CreateIntegerValueResult(Convert.ToInt32(strToConvert.Value));
+                            return CreateIntegerValueResult(Convert.ToInt32(strToConvert.Value)); 
                         default:
                             // TODO: Better exception.
                             throw new NotImplementedException();

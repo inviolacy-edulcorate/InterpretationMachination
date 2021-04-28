@@ -38,6 +38,7 @@ namespace InterpretationMachination.PascalInterpreter
                     ["]"] = PascalTokenType.Brr,
                     ["<"] = PascalTokenType.LessThan,
                     [">"] = PascalTokenType.GreaterThan,
+                    ["#"] = PascalTokenType.HashTag,
                 };
                 ts.IntegerTypes.Add(PascalTokenType.ConstInteger);
                 ts.RealTypes.Add(PascalTokenType.ConstReal);
@@ -597,13 +598,8 @@ namespace InterpretationMachination.PascalInterpreter
                     Eat(PascalTokenType.ParR);
                     return expr;
                 case PascalTokenType.ConstString:
-                    Eat(PascalTokenType.ConstString);
-                    return new LiteralNode<PascalTokenType>
-                    {
-                        Token = token,
-                        Value = token.ValueAsString,
-                        Type = "STRING"
-                    };
+                case PascalTokenType.HashTag:
+                    return StringLiteral(token);
                 case PascalTokenType.KwTrue:
                     Eat(PascalTokenType.KwTrue);
                     return new LiteralNode<PascalTokenType>
@@ -756,6 +752,36 @@ namespace InterpretationMachination.PascalInterpreter
             node.Statement = Statement();
 
             return node;
+        }
+
+        private LiteralNode<PascalTokenType> StringLiteral(GenericToken<PascalTokenType> token)
+        {
+            if (token.Type == PascalTokenType.ConstString)
+            {
+                Eat(PascalTokenType.ConstString);
+                return new LiteralNode<PascalTokenType>
+                {
+                    Token = token,
+                    Value = token.ValueAsString,
+                    Type = "STRING"
+                };
+            }
+
+            if (token.Type == PascalTokenType.HashTag)
+            {
+                Eat(PascalTokenType.HashTag);
+                var intToken = CurrentToken;
+                Eat(PascalTokenType.ConstInteger);
+                return new LiteralNode<PascalTokenType>
+                {
+                    Token = token,
+                    Value = ((char)intToken.ValueAsInt).ToString(),
+                    Type = "STRING"
+                };
+            }
+
+            // TODO: can't read a proper string literal.
+            throw new InvalidOperationException();
         }
     }
 }

@@ -48,6 +48,7 @@
         Brl,
         Brr,
         KwWhile,
-        KwDo
+        KwDo,
+        HashTag
     }
 }
