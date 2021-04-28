@@ -64,12 +64,6 @@ After this, I proceeded to do my own thing (until the next part comes out).
  - [x] Implement boolean operations other than =.
  - [x] Implement ASCII code character literal support (#10 = \n).
 
-## Notes
-There are 2 kinds of expressions/grammar rules/somethings.
-1. Those which return something/are to be used (expr and below).
-2. Those which are collections/higher structures. Don't contain logic and handle program flow.
-Should these have different implementations? Are they different?
-
 ## How to run the AOC code
 1. Go to https://adventofcode.com/ and sign in
 2. Go to any of the input download pages
