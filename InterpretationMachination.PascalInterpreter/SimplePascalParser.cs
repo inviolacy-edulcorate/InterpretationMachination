@@ -36,6 +36,9 @@ namespace InterpretationMachination.PascalInterpreter
                     ["="] = PascalTokenType.Equals,
                     ["["] = PascalTokenType.Brl,
                     ["]"] = PascalTokenType.Brr,
+                    ["<"] = PascalTokenType.LessThan,
+                    [">"] = PascalTokenType.GreaterThan,
+                    ["#"] = PascalTokenType.HashTag,
                 };
                 ts.IntegerTypes.Add(PascalTokenType.ConstInteger);
                 ts.RealTypes.Add(PascalTokenType.ConstReal);
@@ -211,13 +214,13 @@ namespace InterpretationMachination.PascalInterpreter
             return declarations;
         }
 
-        private List<ProcedureNode<PascalTokenType>> ProcedureDeclarations()
+        private List<ProcedureDeclarationNode<PascalTokenType>> ProcedureDeclarations()
         {
-            var declarations = new List<ProcedureNode<PascalTokenType>>();
+            var declarations = new List<ProcedureDeclarationNode<PascalTokenType>>();
 
             while (CurrentToken.Type == PascalTokenType.KwProcedure)
             {
-                var procNode = new ProcedureNode<PascalTokenType>();
+                var procNode = new ProcedureDeclarationNode<PascalTokenType>();
 
                 Eat(PascalTokenType.KwProcedure);
 
@@ -484,7 +487,8 @@ namespace InterpretationMachination.PascalInterpreter
             return new VarNode<PascalTokenType>
             {
                 Token = idToken,
-                Name = (string) idToken.Value
+                Name = (string) idToken.Value,
+                // TODO: Type Unknown during parsing.
             };
         }
 
@@ -493,7 +497,7 @@ namespace InterpretationMachination.PascalInterpreter
             return new NoOpNode<PascalTokenType>();
         }
 
-        private AstNode<PascalTokenType> AddSub()
+        private AstNodeValue<PascalTokenType> AddSub()
         {
             var term = Term();
 
@@ -506,13 +510,19 @@ namespace InterpretationMachination.PascalInterpreter
 
                 Eat(PascalTokenType.OpAdd, PascalTokenType.OpSub);
 
-                term = new BinOpNode<PascalTokenType> {Left = term, Token = token, Right = Term()};
+                term = new BinOpNode<PascalTokenType>
+                {
+                    Left = term,
+                    Token = token,
+                    Right = Term(),
+                    Type = term.Type //TODO: not 100% sure, might be different.
+                };
             }
 
             return term;
         }
 
-        private AstNode<PascalTokenType> Term()
+        private AstNodeValue<PascalTokenType> Term()
         {
             var factor = Factor();
 
@@ -526,13 +536,19 @@ namespace InterpretationMachination.PascalInterpreter
 
                 Eat(PascalTokenType.OpMul, PascalTokenType.OpDiv, PascalTokenType.OpIntDiv);
 
-                factor = new BinOpNode<PascalTokenType> {Left = factor, Token = token, Right = Factor()};
+                factor = new BinOpNode<PascalTokenType>
+                {
+                    Left = factor,
+                    Token = token,
+                    Right = Factor(),
+                    Type = factor.Type //TODO: not 100% sure, might be different.
+                };
             }
 
             return factor;
         }
 
-        private AstNode<PascalTokenType> Factor()
+        private AstNodeValue<PascalTokenType> Factor()
         {
             var token = CurrentToken;
             switch (CurrentToken.Type)
@@ -540,34 +556,40 @@ namespace InterpretationMachination.PascalInterpreter
                 //: ADD factor
                 case PascalTokenType.OpAdd:
                     Eat(PascalTokenType.OpAdd);
+                    var factorAdd = Factor();
                     return new UnaryOpNode<PascalTokenType>
                     {
                         Token = token,
-                        Factor = Factor()
+                        Factor = factorAdd,
+                        Type = factorAdd.Type
                     };
                 //| SUB factor
                 case PascalTokenType.OpSub:
                     Eat(PascalTokenType.OpSub);
+                    var factorSub = Factor();
                     return new UnaryOpNode<PascalTokenType>
                     {
                         Token = token,
-                        Factor = Factor()
+                        Factor = factorSub,
+                        Type = factorSub.Type
                     };
                 //| INTEGER
                 case PascalTokenType.ConstInteger:
                     Eat(PascalTokenType.ConstInteger);
-                    return new NumNode<PascalTokenType>
+                    return new LiteralNode<PascalTokenType>
                     {
                         Token = token,
-                        Value = token.ValueAsInt
+                        Value = token.ValueAsInt,
+                        Type = "INTEGER"
                     };
                 //| REAL
                 case PascalTokenType.ConstReal:
                     Eat(PascalTokenType.ConstReal);
-                    return new NumNode<PascalTokenType>
+                    return new LiteralNode<PascalTokenType>
                     {
                         Token = token,
-                        Value = token.ValueAsReal
+                        Value = token.ValueAsReal,
+                        Type = "REAL"
                     };
                 //| PARL expr PARR
                 case PascalTokenType.ParL:
@@ -576,25 +598,23 @@ namespace InterpretationMachination.PascalInterpreter
                     Eat(PascalTokenType.ParR);
                     return expr;
                 case PascalTokenType.ConstString:
-                    Eat(PascalTokenType.ConstString);
-                    return new NumNode<PascalTokenType>
-                    {
-                        Token = token,
-                        Value = token.ValueAsString
-                    };
+                case PascalTokenType.HashTag:
+                    return StringLiteral(token);
                 case PascalTokenType.KwTrue:
                     Eat(PascalTokenType.KwTrue);
-                    return new NumNode<PascalTokenType>
+                    return new LiteralNode<PascalTokenType>
                     {
                         Token = token,
-                        Value = token.ValueAsBoolean
+                        Value = token.ValueAsBoolean,
+                        Type = "BOOLEAN"
                     };
                 case PascalTokenType.KwFalse:
                     Eat(PascalTokenType.KwFalse);
-                    return new NumNode<PascalTokenType>
+                    return new LiteralNode<PascalTokenType>
                     {
                         Token = token,
-                        Value = token.ValueAsBoolean
+                        Value = token.ValueAsBoolean,
+                        Type = "BOOLEAN"
                     };
                 //| variable
                 default:
@@ -614,7 +634,7 @@ namespace InterpretationMachination.PascalInterpreter
             }
         }
 
-        private AstNode<PascalTokenType> FunctionCall(GenericToken<PascalTokenType> idToken)
+        private AstNodeValue<PascalTokenType> FunctionCall(GenericToken<PascalTokenType> idToken)
         {
             var varNode = Variable(idToken);
             var parameters = new List<AstNode<PascalTokenType>>();
@@ -641,6 +661,7 @@ namespace InterpretationMachination.PascalInterpreter
                 FunctionName = varNode.Name,
                 Token = varNode.Token,
                 Parameters = parameters
+                // TODO: Make sure type is set on runtime/semantic analysis.
             };
         }
 
@@ -672,19 +693,29 @@ namespace InterpretationMachination.PascalInterpreter
             return node;
         }
 
-        private AstNode<PascalTokenType> Expr()
+        private AstNodeValue<PascalTokenType> Expr()
         {
             var factor = AddSub();
 
             while (
-                CurrentToken.Type == PascalTokenType.Equals
+                CurrentToken.Type == PascalTokenType.Equals ||
+                CurrentToken.Type == PascalTokenType.LessThan ||
+                CurrentToken.Type == PascalTokenType.GreaterThan
             )
             {
                 var token = CurrentToken;
 
-                Eat(PascalTokenType.Equals);
+                Eat(PascalTokenType.Equals,
+                    PascalTokenType.GreaterThan,
+                    PascalTokenType.LessThan);
 
-                factor = new BinOpNode<PascalTokenType> {Left = factor, Token = token, Right = AddSub()};
+                factor = new BinOpNode<PascalTokenType>
+                {
+                    Left = factor,
+                    Token = token,
+                    Right = AddSub(),
+                    Type = factor.Type // TODO: Type not 100% sure, might be different
+                };
             }
 
             return factor;
@@ -721,6 +752,36 @@ namespace InterpretationMachination.PascalInterpreter
             node.Statement = Statement();
 
             return node;
+        }
+
+        private LiteralNode<PascalTokenType> StringLiteral(GenericToken<PascalTokenType> token)
+        {
+            if (token.Type == PascalTokenType.ConstString)
+            {
+                Eat(PascalTokenType.ConstString);
+                return new LiteralNode<PascalTokenType>
+                {
+                    Token = token,
+                    Value = token.ValueAsString,
+                    Type = "STRING"
+                };
+            }
+
+            if (token.Type == PascalTokenType.HashTag)
+            {
+                Eat(PascalTokenType.HashTag);
+                var intToken = CurrentToken;
+                Eat(PascalTokenType.ConstInteger);
+                return new LiteralNode<PascalTokenType>
+                {
+                    Token = token,
+                    Value = ((char)intToken.ValueAsInt).ToString(),
+                    Type = "STRING"
+                };
+            }
+
+            // TODO: can't read a proper string literal.
+            throw new InvalidOperationException();
         }
     }
 }

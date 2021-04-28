@@ -27,26 +27,26 @@ namespace InterpretationMachination.PascalInterpreter
             VisitTree(ast);
         }
 
-        protected override void VisitProcedureNode(ProcedureNode<PascalTokenType> procedureNode)
+        protected override void VisitProcedureNode(ProcedureDeclarationNode<PascalTokenType> procedureDeclarationNode)
         {
             // Procedure Name.
-            Output += $"{Indent()}procedure {procedureNode.Name}{CurrentScope.Depth}";
+            Output += $"{Indent()}procedure {procedureDeclarationNode.Name}{CurrentScope.Depth}";
 
             // Move scope down.
-            CurrentScope = ((ProcedureSymbol<PascalTokenType>) CurrentScope.LookupSymbol(procedureNode.Name)).SymbolTable;
+            CurrentScope = ((ProcedureSymbol<PascalTokenType>) CurrentScope.LookupSymbol(procedureDeclarationNode.Name)).SymbolTable;
 
             // Procedure Parameters.
-            if (procedureNode.Parameters != null)
+            if (procedureDeclarationNode.Parameters != null)
             {
                 Output += $"(";
 
-                for (var index = 0; index < procedureNode.Parameters.Count; index++)
+                for (var index = 0; index < procedureDeclarationNode.Parameters.Count; index++)
                 {
-                    var procedureNodeParameter = procedureNode.Parameters[index];
+                    var procedureNodeParameter = procedureDeclarationNode.Parameters[index];
 
                     ProcedureParameterDeclaration(procedureNodeParameter);
 
-                    if (index + 1 < procedureNode.Parameters.Count)
+                    if (index + 1 < procedureDeclarationNode.Parameters.Count)
                     {
                         Output += ";";
                     }
@@ -59,7 +59,7 @@ namespace InterpretationMachination.PascalInterpreter
             Output += $";{Environment.NewLine}";
 
             // Process internal of procedure.
-            VisitAstNode(procedureNode.Block);
+            VisitAstNode(procedureDeclarationNode.Block);
 
             // Move scope back up.
             CurrentScope = CurrentScope.ParentScope;
@@ -102,7 +102,7 @@ namespace InterpretationMachination.PascalInterpreter
             CurrentScope = CurrentScope.ParentScope;
         }
 
-        protected override object VisitUnaryOpNode(UnaryOpNode<PascalTokenType> unaryOpNode)
+        protected override ValueResult VisitUnaryOpNode(UnaryOpNode<PascalTokenType> unaryOpNode)
         {
             base.VisitUnaryOpNode(unaryOpNode);
 
@@ -142,7 +142,7 @@ namespace InterpretationMachination.PascalInterpreter
             VisitAstNode(assignNode.Expr);
         }
 
-        protected override object VisitVariableNode(VarNode<PascalTokenType> varNode)
+        protected override ValueResult VisitVariableNode(VarNode<PascalTokenType> varNode)
         {
             Output +=
                 $"<{varNode.Name}{CurrentScope.LookupSymbol(varNode.Name).ScopeLevel}:{CurrentScope.LookupSymbol(varNode.Name).Type.Name}>";
@@ -178,7 +178,7 @@ namespace InterpretationMachination.PascalInterpreter
             base.VisitTypeNode(typeNode);
         }
 
-        protected override object VisitBinOpNode(BinOpNode<PascalTokenType> node)
+        protected override ValueResult VisitBinOpNode(BinOpNode<PascalTokenType> node)
         {
             VisitAstNode(node.Left);
             switch (node.Token.Type)
@@ -208,7 +208,7 @@ namespace InterpretationMachination.PascalInterpreter
             return null;
         }
 
-        protected override object VisitNumericNode(NumNode<PascalTokenType> node)
+        protected override ValueResult VisitNumericNode(LiteralNode<PascalTokenType> node)
         {
             base.VisitNumericNode(node);
 

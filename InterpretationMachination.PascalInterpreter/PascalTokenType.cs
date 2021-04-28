@@ -43,9 +43,12 @@
         Colon,
         Comma,
         Equals,
+        GreaterThan,
+        LessThan,
         Brl,
         Brr,
         KwWhile,
-        KwDo
+        KwDo,
+        HashTag
     }
 }

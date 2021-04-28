@@ -48,18 +48,21 @@ After this, I proceeded to do my own thing (until the next part comes out).
  - [ ] For Loop support.
  - [ ] Procedure overloading.
  - [ ] Cleanup todos.
- - [ ] Expand print functionality to support strings etc.
+ - [x] Expand print functionality to support strings etc.
  - [x] String support.
  - [x] Add function support.
  - [ ] Allow function call without return type usage.
  - [ ] Add string operations.
    - [x] String Index.
  - [x] Extract all Pascal specifics out of the data structures.
- - [ ] Type handling.
+ - [x] Type handling.
  - [x] Add file reading function (ReadFile()).
  - [x] Add string length function (Length()).
  - [x] While loop support.
  - [x] Extract Lexer into more generic class.
+ - [x] Implement typed operators (+) to support different actions when called with different types.
+ - [x] Implement boolean operations other than =.
+ - [x] Implement ASCII code character literal support (#10 = \n).
 
 ## Notes
 There are 2 kinds of expressions/grammar rules/somethings.
@@ -67,6 +70,18 @@ There are 2 kinds of expressions/grammar rules/somethings.
 2. Those which are collections/higher structures. Don't contain logic and handle program flow.
 Should these have different implementations? Are they different?
 
+## How to run the AOC code
+1. Go to https://adventofcode.com/ and sign in
+2. Go to any of the input download pages
+3. Open the dev-tools of your browser
+4. Open the "network" tab and refresh the page
+5. Copy the value of the "Cookie" header (without session=, just the hash)
+6. Copy cookiesession.example to cookiesession in PascalFiles/AOC
+7. Paste the hash value of the cookie in this cookiesession file
+8. Run the dl.sh script
+9. All the input files are now loaded in the YYYY/Input folder
+
+## Example tasks.json
 ```json
 {
     "version": "2.0.0",

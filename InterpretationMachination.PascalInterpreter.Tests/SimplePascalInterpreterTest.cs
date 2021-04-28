@@ -33,8 +33,8 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             // Assert
             Assert.Equal(2, subject.GlobalScope.Top["a"]);
             Assert.Equal(11, subject.GlobalScope.Top["x"]);
-            Assert.Equal(27d, subject.GlobalScope.Top["c"]);
-            Assert.Equal(25d, subject.GlobalScope.Top["b"]);
+            Assert.Equal(27, subject.GlobalScope.Top["c"]);
+            Assert.Equal(25, subject.GlobalScope.Top["b"]);
             Assert.Equal(2, subject.GlobalScope.Top["number"]);
         }
 
@@ -64,8 +64,8 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             // Assert
             Assert.Equal(2, subject.GlobalScope.Top["a"]);
             Assert.Equal(11, subject.GlobalScope.Top["x"]);
-            Assert.Equal(27d, subject.GlobalScope.Top["c"]);
-            Assert.Equal(25d, subject.GlobalScope.Top["b"]);
+            Assert.Equal(27, subject.GlobalScope.Top["c"]);
+            Assert.Equal(25, subject.GlobalScope.Top["b"]);
             Assert.Equal(2, subject.GlobalScope.Top["number"]);
         }
 
@@ -94,8 +94,8 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             // Assert
             Assert.Equal(2, subject.GlobalScope.Top["a"]);
             Assert.Equal(11, subject.GlobalScope.Top["x"]);
-            Assert.Equal(27d, subject.GlobalScope.Top["c"]);
-            Assert.Equal(25d, subject.GlobalScope.Top["_b"]);
+            Assert.Equal(27, subject.GlobalScope.Top["c"]);
+            Assert.Equal(25, subject.GlobalScope.Top["_b"]);
             Assert.Equal(2, subject.GlobalScope.Top["number"]);
         }
 
@@ -124,8 +124,8 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             // Assert
             Assert.Equal(2, subject.GlobalScope.Top["a12"]);
             Assert.Equal(11, subject.GlobalScope.Top["x"]);
-            Assert.Equal(27d, subject.GlobalScope.Top["c"]);
-            Assert.Equal(25d, subject.GlobalScope.Top["b"]);
+            Assert.Equal(27, subject.GlobalScope.Top["c"]);
+            Assert.Equal(25, subject.GlobalScope.Top["b"]);
             Assert.Equal(2, subject.GlobalScope.Top["number"]);
         }
 
@@ -163,8 +163,8 @@ namespace InterpretationMachination.PascalInterpreter.Tests
 
             // Assert
             Assert.Equal(2, subject.GlobalScope.Top["a"]);
-            Assert.Equal(25d, subject.GlobalScope.Top["b"]);
-            Assert.Equal(27d, subject.GlobalScope.Top["c"]);
+            Assert.Equal(25, subject.GlobalScope.Top["b"]);
+            Assert.Equal(27, subject.GlobalScope.Top["c"]);
             Assert.Equal(11, subject.GlobalScope.Top["x"]);
             Assert.Equal(2, subject.GlobalScope.Top["number"]);
             Assert.Equal(5.99714285714, Math.Round((double) subject.GlobalScope.Top["y"], 11));
@@ -254,7 +254,7 @@ namespace InterpretationMachination.PascalInterpreter.Tests
                  end.  { Main }");
 
             // Assert
-            Assert.Equal(30d, subject.GlobalScope.Top["x"]);
+            Assert.Equal(30, subject.GlobalScope.Top["x"]);
         }
 
         [Fact]
@@ -293,8 +293,8 @@ namespace InterpretationMachination.PascalInterpreter.Tests
                 end.  { Main }");
 
             // Assert
-            Assert.Equal(30d, subject.GlobalScope.Top["y"]);
-            Assert.Equal(70d, subject.GlobalScope.Top["z"]);
+            Assert.Equal(30, subject.GlobalScope.Top["y"]);
+            Assert.Equal(70, subject.GlobalScope.Top["z"]);
         }
 
         [Fact]
@@ -449,8 +449,28 @@ namespace InterpretationMachination.PascalInterpreter.Tests
 
             // Assert
             Assert.Equal(13, subject.GlobalScope.Top["j"]);
-            Assert.Equal(13d, subject.GlobalScope.Top["i"]);
+            Assert.Equal(13, subject.GlobalScope.Top["i"]);
             Assert.Equal(false, subject.GlobalScope.Top["l"]);
+        }
+
+        [Fact]
+        public void TestInterpretStringConcat()
+        {
+            // Arrange
+            var subject = new SimplePascalInterpreter();
+
+            // Act
+            subject.Interpret(@"program Main;
+                    	var text1, text2, text3 : string;
+                    		
+                    begin { Main }
+                    	text1 := 'Hello';
+                    	text2 := 'World';
+                    	text3 := text1 + ' ' + text2 + '!';
+                    end.  { Main }");
+
+            // Assert
+            Assert.Equal("Hello World!", subject.GlobalScope.Top["text3"]);
         }
     }
 }

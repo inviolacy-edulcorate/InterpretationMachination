@@ -37,6 +37,12 @@ namespace InterpretationMachination.PascalInterpreter
                     new VariableSymbol("inputString", CurrentScope.LookupSymbol("STRING"))
                 },
                 CurrentScope.LookupSymbol("INTEGER")));
+            CurrentScope.DeclareSymbol(new BuiltinFunctionSymbol("STRTOINT",
+                new List<VariableSymbol>
+                {
+                    new VariableSymbol("inputString", CurrentScope.LookupSymbol("STRING"))
+                },
+                CurrentScope.LookupSymbol("INTEGER")));
         }
 
         public ScopedSymbolTable CurrentScope { get; private set; }
@@ -94,7 +100,7 @@ namespace InterpretationMachination.PascalInterpreter
             }
         }
 
-        protected override object VisitVariableNode(VarNode<PascalTokenType> varNode)
+        protected override ValueResult VisitVariableNode(VarNode<PascalTokenType> varNode)
         {
             // Test that the symbol has been declared before usage.
             var symbol = CurrentScope.LookupSymbol(varNode.Name);
@@ -109,13 +115,13 @@ namespace InterpretationMachination.PascalInterpreter
             return null;
         }
 
-        protected override void VisitProcedureNode(ProcedureNode<PascalTokenType> procedureNode)
+        protected override void VisitProcedureNode(ProcedureDeclarationNode<PascalTokenType> procedureDeclarationNode)
         {
             var parametersList = new List<VariableSymbol>();
 
-            if (procedureNode.Parameters != null)
+            if (procedureDeclarationNode.Parameters != null)
             {
-                foreach (var declaration in procedureNode.Parameters)
+                foreach (var declaration in procedureDeclarationNode.Parameters)
                 {
                     var type = CurrentScope.LookupSymbol(declaration.Type.Type);
 
@@ -127,16 +133,16 @@ namespace InterpretationMachination.PascalInterpreter
             }
 
             var procedureSymbol = new ProcedureSymbol<PascalTokenType>(
-                procedureNode.Name,
+                procedureDeclarationNode.Name,
                 parametersList,
-                new ScopedSymbolTable(procedureNode.Name, CurrentScope),
-                procedureNode.Block
+                new ScopedSymbolTable(procedureDeclarationNode.Name, CurrentScope),
+                procedureDeclarationNode.Block
             );
 
             CurrentScope.DeclareSymbol(procedureSymbol);
             CurrentScope = procedureSymbol.SymbolTable;
 
-            base.VisitProcedureNode(procedureNode);
+            base.VisitProcedureNode(procedureDeclarationNode);
 
             CurrentScope = CurrentScope.ParentScope;
         }
@@ -211,7 +217,7 @@ namespace InterpretationMachination.PascalInterpreter
         /// Tests that the arguments are the same amount of as the definition.
         /// </summary>
         /// <param name="functionCallNode"></param>
-        protected override object VisitFunctionCallNode(FunctionCallNode<PascalTokenType> functionCallNode)
+        protected override ValueResult VisitFunctionCallNode(FunctionCallNode<PascalTokenType> functionCallNode)
         {
             var symbol = CurrentScope.LookupSymbol(functionCallNode.FunctionName);
 

@@ -604,5 +604,21 @@ namespace InterpretationMachination.PascalInterpreter.Tests
                 end.  { Main }
                 ");
         }
+
+        [Fact]
+        public void TestParseStringHashtagStringLiteral()
+        {
+            // Arrange
+            var subject = new SimplePascalParser();
+
+            // Act
+            var result = subject.Parse(@"
+                program Main;
+                   var i : string;
+                begin { Main }
+                    i := #10;
+                end.  { Main }
+                ");
+        }
     }
 }

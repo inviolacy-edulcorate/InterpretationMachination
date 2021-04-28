@@ -23,7 +23,7 @@ procedure-call			: variable PARL (expr (COMMA expr)*)? PARR
 function-call			: variable PARL (expr (COMMA expr)*)? PARR
 while-loop				: WHILE expr DO statement
 index					: variable BRL expr BRR
-expr					: add-sub((EQUALS)add-sub)*
+expr					: add-sub((EQUALS|GT|LT)add-sub)*
 add-sub					: term((ADD|SUB)term)*
 term					: factor((MUL|DIV|INTDIV)factor)*
 factor					: ADD factor
@@ -36,14 +36,16 @@ factor					: ADD factor
 						| variable
 						| function-call
 						| index
-						| CONSTSTRING
+						| string-literal
+string-literal			: CONSTSTRING
+						| HASHTAG CONSTINTEGER
 
 DOT				: "."
 SEMCOL			: ";"
 ASSIGN			: ":="
 ID				: [a-zA-Z]+
-CONSTINTEGER	: [1-9]+
-CONSTREAL		: [1-9]+
+CONSTINTEGER	: [0-9]+
+CONSTREAL		: [0-9]+
 CONSTSTRING		: "'...'"
 ADD				: "+"
 SUB				: "-"
@@ -55,6 +57,9 @@ COLON			: ":"
 EQUALS			: "="
 BRL				: "["
 BRR				: "]"
+GT				: ">"
+LT				: "<"
+HASHTAG			: "#"
 BEGIN			: "BEGIN"
 END				: "END"
 TYPEINTEGER		: "INTEGER"
