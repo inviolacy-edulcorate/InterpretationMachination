@@ -5,7 +5,14 @@ declarations			: VAR (variable-declaration SEMCOL)+ (procedure-declarations | fu
 procedure-declarations	: PROCEDURE variable (PARL variable-declaration (SEMCOL variable-declaration)* PARR)? SEMCOL block SEMCOL
 function-declaration	: FUNCTION variable (PARL variable-declaration (SEMCOL variable-declaration)* PARR)? COLON type-spec SEMCOL block SEMCOL
 variable-declaration	: ID (COMMA ID)* COLON type-spec
-type-spec				: TYPEINTEGER | TYPEREAL | TYPESTRING
+type-spec				: TYPEINTEGER
+						| TYPEREAL 
+						| TYPESTRING
+						| ARRAY BRL array-index-type BRR OF type-spec
+array-index-type		: CONSTINTEGER DOUBLEDOT CONSTINTEGER
+						| TYPEINTEGER
+						| TYPEREAL 
+						| TYPESTRING
 compound-statement		: BEGIN statement-list END
 statement-list			: statement 
 						| statement SEMCOL statement-list
@@ -60,6 +67,7 @@ BRR				: "]"
 GT				: ">"
 LT				: "<"
 HASHTAG			: "#"
+DOUBLEDOT		: ".."
 BEGIN			: "BEGIN"
 END				: "END"
 TYPEINTEGER		: "INTEGER"
@@ -77,3 +85,6 @@ TRUE			: "TRUE"
 FALSE			: "FALSE"
 WHILE			: "WHILE"
 DO				: "DO"
+ARRAY			: "ARRAY"
+OF				: "OF"
+
