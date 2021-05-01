@@ -8,11 +8,9 @@ variable-declaration	: ID (COMMA ID)* COLON type-spec
 type-spec				: TYPEINTEGER
 						| TYPEREAL 
 						| TYPESTRING
+						| TYPEBOOLEAN
 						| ARRAY BRL array-index-type BRR OF type-spec
-array-index-type		: CONSTINTEGER DOUBLEDOT CONSTINTEGER
-						| TYPEINTEGER
-						| TYPEREAL 
-						| TYPESTRING
+						| CONSTINTEGER DOUBLEDOT CONSTINTEGER
 compound-statement		: BEGIN statement-list END
 statement-list			: statement 
 						| statement SEMCOL statement-list

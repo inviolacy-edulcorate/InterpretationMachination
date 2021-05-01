@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 
 namespace InterpretationMachination.DataStructures.SymbolTable
 {

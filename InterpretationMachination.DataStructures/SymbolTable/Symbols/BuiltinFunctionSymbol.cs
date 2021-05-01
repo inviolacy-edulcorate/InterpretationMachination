@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace InterpretationMachination.DataStructures.SymbolTable
+namespace InterpretationMachination.DataStructures.SymbolTable.Symbols
 {
     public class BuiltinFunctionSymbol : FunctionSymbolBase
     {

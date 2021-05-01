@@ -49,6 +49,9 @@
         Brr,
         KwWhile,
         KwDo,
-        HashTag
+        HashTag,
+        KwArray,
+        KwOf,
+        DoubleDot,
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
 using InterpretationMachination.DataStructures.CallStack;
 using InterpretationMachination.DataStructures.SymbolTable;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 using InterpretationMachination.Interfaces.Interfaces;
 using InterpretationMachination.PascalInterpreter.AstNodes;
 

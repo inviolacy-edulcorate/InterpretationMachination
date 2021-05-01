@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
 using InterpretationMachination.DataStructures.SymbolTable;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 using InterpretationMachination.Interfaces.Exceptions;
 using InterpretationMachination.Interfaces.Interfaces;
 using InterpretationMachination.PascalInterpreter.AstNodes;

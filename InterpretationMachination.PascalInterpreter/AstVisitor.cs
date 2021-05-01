@@ -1,6 +1,7 @@
 ﻿using System;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
 using InterpretationMachination.DataStructures.SymbolTable;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 using InterpretationMachination.PascalInterpreter.AstNodes;
 
 namespace InterpretationMachination.PascalInterpreter

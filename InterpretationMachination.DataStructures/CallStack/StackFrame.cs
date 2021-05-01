@@ -32,7 +32,7 @@ namespace InterpretationMachination.DataStructures.CallStack
         /// Initializes the Stack Frame based on the table that was passed to it.
         ///
         /// This allows for 'get' simplification (no null checks) and is possible
-        /// due to the static nature of the Pascal.
+        /// due to the statically typed nature of the Pascal.
         /// </summary>
         private void InitializeFromScopedSymbolTable()
         {

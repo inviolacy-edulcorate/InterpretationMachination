@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IM.Lexers;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 using InterpretationMachination.DataStructures.Tokens;
 using InterpretationMachination.Interfaces.Exceptions;
 using InterpretationMachination.Interfaces.Interfaces;
@@ -39,6 +40,7 @@ namespace InterpretationMachination.PascalInterpreter
                     ["<"] = PascalTokenType.LessThan,
                     [">"] = PascalTokenType.GreaterThan,
                     ["#"] = PascalTokenType.HashTag,
+                    [".."] = PascalTokenType.DoubleDot,
                 };
                 ts.IntegerTypes.Add(PascalTokenType.ConstInteger);
                 ts.RealTypes.Add(PascalTokenType.ConstReal);
@@ -93,6 +95,8 @@ namespace InterpretationMachination.PascalInterpreter
             {"BOOLEAN", PascalTokenType.TypeBoolean},
             {"WHILE", PascalTokenType.KwWhile},
             {"DO", PascalTokenType.KwDo},
+            {"ARRAY", PascalTokenType.KwArray},
+            {"OF", PascalTokenType.KwOf},
         };
 
         public AstNode<PascalTokenType> Parse(string inputString)
@@ -365,6 +369,34 @@ namespace InterpretationMachination.PascalInterpreter
                         Type = "BOOLEAN"
                     };
                     Eat(PascalTokenType.TypeBoolean);
+                    break;
+                case PascalTokenType.KwArray:
+                    var arraytoken = new ArrayTypeNode<PascalTokenType>
+                    {
+                        Token = CurrentToken,
+                        Type = "ARRAY"
+                    };
+                    Eat(PascalTokenType.KwArray);
+                    Eat(PascalTokenType.Brl);
+                    arraytoken.Subscript = TypeSpec();
+                    Eat(PascalTokenType.Brr);
+                    Eat(PascalTokenType.KwOf);
+                    arraytoken.ArrayType = TypeSpec();
+                    token = arraytoken;
+                    break;
+                case PascalTokenType.ConstInteger:
+                    var anonType = new AnonymousTypeNode<PascalTokenType>
+                    {
+                        Token = CurrentToken,
+                        Type = "SUBRANGE"
+                    };
+                    var rangeStart = CurrentToken.ValueAsInt;
+                    Eat(PascalTokenType.ConstInteger);
+                    Eat(PascalTokenType.DoubleDot);
+                    var rangeEnd = CurrentToken.ValueAsInt;
+                    Eat(PascalTokenType.ConstInteger);
+                    anonType.Symbol = new SubrangeScalarDataTypeSymbol(rangeStart, rangeEnd);
+                    token = anonType;
                     break;
                 default:
                     throw new InvalidOperationException($"Token Type '{CurrentToken.Type}' is not a Type!");

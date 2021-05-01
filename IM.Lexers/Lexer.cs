@@ -94,6 +94,7 @@ namespace IM.Lexers
                     return GetId();
                 }
 
+                // TODO: Recognize 1.2 vs 1..2
                 if (Regex.IsMatch(CurrentChar, TokenSet.NumericRecognizePattern))
                 {
                     return GetInt();
@@ -142,6 +143,19 @@ namespace IM.Lexers
             Position += 1;
         }
 
+        private void Recede()
+        {
+            ColumnNumber -= 1;
+
+            Position -= 1;
+
+            // If we find a new-line, move the line number up one.
+            if (TokenSet.NewLineCharacters.Contains(CurrentChar))
+            {
+                throw new InvalidOperationException("Recede can't move back over newlines.");
+            }
+        }
+
         /// <summary>
         /// Advance the pointer by x.
         /// </summary>
@@ -150,6 +164,17 @@ namespace IM.Lexers
             for (int i = 0; i < x; i++)
             {
                 Advance();
+            }
+        }
+
+        /// <summary>
+        /// Advance the pointer by x.
+        /// </summary>
+        private void Recede(int x)
+        {
+            for (int i = 0; i < x; i++)
+            {
+                Recede();
             }
         }
 
@@ -193,6 +218,20 @@ namespace IM.Lexers
             if (double.TryParse(tokenText, out double tokenDouble))
             {
                 return new GenericToken<T>(TokenSet, TokenSet.DoubleTokenType, tokenDouble, line, col);
+            }
+
+            if (tokenText.Contains(".."))
+            {
+                int i = tokenText.IndexOf("..", StringComparison.InvariantCulture);
+
+                string beforeDotDot = tokenText.Substring(0, i);
+
+                Recede(tokenText.Length - i);
+
+                if (int.TryParse(beforeDotDot, out int tokenInt2))
+                {
+                    return new GenericToken<T>(TokenSet, TokenSet.IntegerTokenType, tokenInt2, line, col);
+                }
             }
 
             throw new InvalidOperationException($"Token text '{tokenText}' can't be parsed!");

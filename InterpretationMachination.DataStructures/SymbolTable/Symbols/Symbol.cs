@@ -1,4 +1,4 @@
-﻿namespace InterpretationMachination.DataStructures.SymbolTable
+﻿namespace InterpretationMachination.DataStructures.SymbolTable.Symbols
 {
     public class Symbol
     {

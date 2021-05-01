@@ -1,4 +1,5 @@
 ﻿using InterpretationMachination.DataStructures.SymbolTable;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 
 namespace InterpretationMachination.DataStructures.CallStack
 {

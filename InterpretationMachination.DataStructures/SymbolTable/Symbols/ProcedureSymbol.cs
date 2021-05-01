@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
 
-namespace InterpretationMachination.DataStructures.SymbolTable
+namespace InterpretationMachination.DataStructures.SymbolTable.Symbols
 {
     /// <summary>
     /// A symbol which represents a procedure.

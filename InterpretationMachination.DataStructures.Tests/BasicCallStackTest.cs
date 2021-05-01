@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using InterpretationMachination.DataStructures.CallStack;
 using InterpretationMachination.DataStructures.SymbolTable;
+using InterpretationMachination.DataStructures.SymbolTable.Symbols;
 using Xunit;
 
 namespace InterpretationMachination.DataStructures.Tests

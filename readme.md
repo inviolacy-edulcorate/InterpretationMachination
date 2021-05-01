@@ -63,6 +63,7 @@ After this, I proceeded to do my own thing (until the next part comes out).
  - [x] Implement typed operators (+) to support different actions when called with different types.
  - [x] Implement boolean operations other than =.
  - [x] Implement ASCII code character literal support (#10 = \n).
+ - [ ] Allow one node to contain a longer list of tokens if needed (array types for example).
 
 ## How to run the AOC code
 1. Go to https://adventofcode.com/ and sign in

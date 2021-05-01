@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using InterpretationMachination.DataStructures.AbstractSyntaxTree;
 
-namespace InterpretationMachination.DataStructures.SymbolTable
+namespace InterpretationMachination.DataStructures.SymbolTable.Symbols
 {
     public class UserDefinedFunctionSymbol<T> : FunctionSymbolBase where T : Enum
     {

@@ -620,5 +620,65 @@ namespace InterpretationMachination.PascalInterpreter.Tests
                 end.  { Main }
                 ");
         }
+
+        [Fact]
+        public void TestParseArrayDeclarationIntToInt()
+        {
+            // Arrange
+            var subject = new SimplePascalParser();
+
+            // Act
+            var result = subject.Parse(@"
+                program Main;
+                   var n: array [1..10] of integer;
+                begin { Main }
+                end.  { Main }
+                ");
+        }
+
+        [Fact]
+        public void TestParseArrayDeclarationInteger()
+        {
+            // Arrange
+            var subject = new SimplePascalParser();
+
+            // Act
+            var result = subject.Parse(@"
+                program Main;
+                   var n: array [integer] of integer;
+                begin { Main }
+                end.  { Main }
+                ");
+        }
+
+        [Fact]
+        public void TestParseSubRangeType()
+        {
+            // Arrange
+            var subject = new SimplePascalParser();
+
+            // Act
+            var result = subject.Parse(@"
+                program Main;
+                   var n: 1..10;
+                begin { Main }
+                end.  { Main }
+                ");
+        }
+
+        [Fact]
+        public void TestParseArrayDeclarationArray()
+        {
+            // Arrange
+            var subject = new SimplePascalParser();
+
+            // Act
+            var result = subject.Parse(@"
+                program Main;
+                   var n: array [integer] of array [integer] of integer;
+                begin { Main }
+                end.  { Main }
+                ");
+        }
     }
 }
