@@ -911,13 +911,99 @@ namespace InterpretationMachination.PascalInterpreter.Tests
             var global = Assert.IsType<ProcedureSymbol<PascalTokenType>>(globalSymbol);
         }
 
+        [Fact]
+        public void TestAnalyzeSubRangeVariable()
+        {
+            // Arrange
+            var subject = new SemanticAnalyzer();
+            var parser = new SimplePascalParser();
+            var ast = parser.Parse(
+                @"
+                program Main;
+                   var i : 1..10;
+                begin { Main }
+                end.  { Main }
+               "
+            );
+
+            // Act
+            subject.Analyze(ast);
+            var result = subject.CurrentScope;
+
+            // Assert
+            var globalSymbol = result.LookupSymbol("GLOBAL");
+            var global = Assert.IsType<ProcedureSymbol<PascalTokenType>>(globalSymbol);
+
+            AssertScopeSymbol("i", "1..10", global.SymbolTable);
+        }
+
+        [Fact]
+        public void TestAnalyzeArrayVariable()
+        {
+            // Arrange
+            var subject = new SemanticAnalyzer();
+            var parser = new SimplePascalParser();
+            var ast = parser.Parse(
+                @"
+                program Main;
+                   var i : array [integer] of string;
+                begin { Main }
+                end.  { Main }
+               "
+            );
+
+            // Act
+            subject.Analyze(ast);
+            var result = subject.CurrentScope;
+
+            // Assert
+            var globalSymbol = result.LookupSymbol("GLOBAL");
+            var global = Assert.IsType<ProcedureSymbol<PascalTokenType>>(globalSymbol);
+
+            AssertScopeSymbol("i", "ARRAY[INTEGER]OFSTRING", global.SymbolTable);
+            var variable = Assert.IsType<VariableSymbol>(
+                global.SymbolTable.LookupSymbol("i"));
+            var array = Assert.IsType<ArrayDataTypeSymbol>(variable.Type);
+            Assert.Equal("STRING", array.ArrayType.Name);
+            Assert.Equal("INTEGER", array.SubscriptType.Name);
+        }
+
+        [Fact]
+        public void TestAnalyzeArrayVariableSubRangeSubscript()
+        {
+            // Arrange
+            var subject = new SemanticAnalyzer();
+            var parser = new SimplePascalParser();
+            var ast = parser.Parse(
+                @"
+                program Main;
+                   var i : array [1..10] of string;
+                begin { Main }
+                end.  { Main }
+               "
+            );
+
+            // Act
+            subject.Analyze(ast);
+            var result = subject.CurrentScope;
+
+            // Assert
+            var globalSymbol = result.LookupSymbol("GLOBAL");
+            var global = Assert.IsType<ProcedureSymbol<PascalTokenType>>(globalSymbol);
+
+            AssertScopeSymbol("i", "ARRAY[1..10]OFSTRING", global.SymbolTable);
+            var variable = Assert.IsType<VariableSymbol>(
+                global.SymbolTable.LookupSymbol("i"));
+            var array = Assert.IsType<ArrayDataTypeSymbol>(variable.Type);
+            Assert.Equal("STRING", array.ArrayType.Name);
+            Assert.Equal("1..10", array.SubscriptType.Name);
+        }
+
         [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
         private void AssertScopeSymbol(string name, string type, ScopedSymbolTable scope)
         {
             Assert.Equal(name, scope.LookupSymbol(name).Name);
             Assert.Equal(type, scope.LookupSymbol(name).Type.Name);
         }
-
-
     }
 }

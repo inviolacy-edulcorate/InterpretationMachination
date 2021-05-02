@@ -79,11 +79,7 @@ namespace InterpretationMachination.PascalInterpreter
             }
 
             // Ensure type is declared.
-            var type = CurrentScope.LookupSymbol(typeNode.Type);
-            if (type == null)
-            {
-                throw new TypeNotDeclaredException(typeNode.Type);
-            }
+            var type = GetTypeSymbolFromNode(typeNode);
 
             // We can declare several variables with the same type in 1 declaration, so loop.
             foreach (var varName in varDeclNode.Variable)
@@ -245,6 +241,30 @@ namespace InterpretationMachination.PascalInterpreter
             base.VisitFunctionCallNode(functionCallNode);
 
             return null;
+        }
+
+        private Symbol GetTypeSymbolFromNode(TypeNode<PascalTokenType> typeNode)
+        {
+            var type = CurrentScope.LookupSymbol(typeNode.Type);
+
+            if (type != null)
+            {
+                return type;
+            }
+
+            if (typeNode is AnonymousTypeNode<PascalTokenType> anonymousType)
+            {
+                return anonymousType.Symbol;
+            }
+
+            if (typeNode is ArrayTypeNode<PascalTokenType> arrayType)
+            {
+                return new ArrayDataTypeSymbol(
+                    GetTypeSymbolFromNode(arrayType.Subscript),
+                    GetTypeSymbolFromNode(arrayType.ArrayType));
+            }
+
+            throw new TypeNotDeclaredException(typeNode.Type);
         }
     }
 }

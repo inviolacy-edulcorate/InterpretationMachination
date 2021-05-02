@@ -54,4 +54,17 @@
         /// </summary>
         public int RangeEnd { get; set; }
     }
+
+    public class ArrayDataTypeSymbol : DataTypeSymbol
+    {
+        public ArrayDataTypeSymbol(Symbol subscriptType, Symbol arrayType)
+            : base($"ARRAY[{subscriptType.Name}]OF{arrayType.Name}")
+        {
+            SubscriptType = subscriptType;
+            ArrayType = arrayType;
+        }
+
+        public Symbol SubscriptType { get; set; }
+        public Symbol ArrayType { get; set; }
+    }
 }
