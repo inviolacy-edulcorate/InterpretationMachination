@@ -38,12 +38,13 @@ factor					: ADD factor
 						| TRUE
 						| FALSE
 						| PARL expr PARR
-						| variable
+						| variable			| array-access
 						| function-call
 						| index
 						| string-literal
 string-literal			: CONSTSTRING
 						| HASHTAG CONSTINTEGER
+array-access			: variable BRL expr BRR
 
 DOT				: "."
 SEMCOL			: ";"
